@@ -45,13 +45,7 @@
                             <outlet property="delegate" destination="4x7-pN-U19" id="31K-fd-6BM"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="bz6-t3-mBH">
-                        <barButtonItem key="rightBarButtonItem" title="Fetch" id="GLG-a1-krV">
-                            <connections>
-                                <action selector="fetchButtonTapped:" destination="4x7-pN-U19" id="nFz-0J-16D"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="bz6-t3-mBH"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hjh-0p-ElT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

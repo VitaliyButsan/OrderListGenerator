@@ -7,34 +7,113 @@
 //
 
 import UIKit
+import CoreData
 
 class OrdersTableViewController: UITableViewController {
-
+    
+    var activityIndicator = UIActivityIndicatorView()
+    var refreshBarButton = UIBarButtonItem()
+    var activityBarButton = UIBarButtonItem()
+    var isRewound: Bool = false
+    
     let dataModel = OrderFieldViewModel()
+    
+    let redCircle: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 100, width: 50, height: 50))
+        view.backgroundColor = .red
+        view.layer.cornerRadius = 25
+        view.tintColor = .red
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        set(title: "writing -> reading...")
+        setupBarButtons()
+        setupObserver()
+        addTestAnimationRedView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         dataModel.setupData()
-        //deleteAllData()
+    }
+    
+    private func set(title: String) {
+        DispatchQueue.main.async {
+            self.navigationItem.title = title
+        }
+    }
+    private func setupObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(performObj(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
+    }
+    
+    @objc func performObj(_ notification: Notification) {
+        print("-- Saved to db, reading... --")
+        set(title: "reading...")
+        getOrders()
+    }
+    
+    private func setupBarButtons() {
+        activityIndicator.sizeToFit()
+        activityIndicator.color = view.tintColor
+        activityIndicator.startAnimating()
+        
+        activityBarButton = UIBarButtonItem(customView: activityIndicator)
+        refreshBarButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(rewindRows))
+        showActivityIndicator()
+    }
+    
+    private func showActivityIndicator() {
+        navigationItem.setRightBarButton(activityBarButton, animated: true)
+    }
+    
+    private func showRefreshBarButton() {
+        navigationItem.setRightBarButton(refreshBarButton, animated: true)
+    }
+    
+    @objc func rewindRows() {
+        if isRewound {
+            let indexPath = IndexPath(row: dataModel.orders.startIndex, section: 0)
+            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        } else {
+            let indexPath = IndexPath(row: dataModel.orders.endIndex - 1, section: 0)
+            tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
+        isRewound.toggle()
+    }
+    
+    func addTestAnimationRedView() {
+        tableView.addSubview(redCircle)
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.repeat, .autoreverse], animations: {
+            self.redCircle.frame = CGRect(x: 100, y: 100, width: 50, height: 50)
+        }, completion: nil)
     }
     
     func deleteAllData() {
         dataModel.delAllData("OrderList")
         dataModel.delAllData("OrderField")
     }
-    
-    @IBAction func fetchButtonTapped(_ sender: UIBarButtonItem) {
+
+    private func getOrders() {
         dataModel.getOrders { result in
             if result {
                 self.dataModel.orders.sort(by: { $0.field.id < $1.field.id })
                 DispatchQueue.main.async {
+                    self.set(title: "Completed!")
+                    self.activityIndicator.stopAnimating()
+                    self.showRefreshBarButton()
                     self.tableView.reloadData()
                 }
             } else {
                 // call Alert
-                print("ERROR: Data not received!.")
+                print("ERROR: Orders not received!.")
             }
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 

@@ -11,9 +11,10 @@ import CoreData
 
 class CoreDataManager {
     
+    private let delegate = UIApplication.shared.delegate as! AppDelegate
+    
     // read
     func readOrders(callback: @escaping ([Order]?) -> Void) {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else { return }
         delegate.persistentContainer.performBackgroundTask { context in
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "OrderList")
             var orders: [Order] = []
@@ -38,8 +39,6 @@ class CoreDataManager {
     
     // write
     func write(orderFields: [Field]) {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        
         delegate.persistentContainer.performBackgroundTask { context in
             for field in orderFields {
                 guard let orderFieldEntity = NSEntityDescription.entity(forEntityName: "OrderField", in: context) else { return }
@@ -61,7 +60,6 @@ class CoreDataManager {
     
     // delete
     func deleteAllData(_ entityName: String) {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else { return }
         delegate.persistentContainer.performBackgroundTask { context in
         
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
