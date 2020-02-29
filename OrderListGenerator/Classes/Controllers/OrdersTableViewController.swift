@@ -11,14 +11,14 @@ import CoreData
 
 class OrdersTableViewController: UITableViewController {
     
-    var activityIndicator = UIActivityIndicatorView()
-    var refreshBarButton = UIBarButtonItem()
-    var activityBarButton = UIBarButtonItem()
-    var isRewound: Bool = false
+    private var activityIndicator = UIActivityIndicatorView()
+    private var refreshBarButton = UIBarButtonItem()
+    private var activityBarButton = UIBarButtonItem()
+    private var isRewound: Bool = false
     
-    let dataModel = OrderFieldViewModel()
+    private let dataModel = OrderFieldViewModel()
     
-    let redCircle: UIView = {
+    private let redCircle: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 100, width: 50, height: 50))
         view.backgroundColor = .red
         view.layer.cornerRadius = 25
@@ -28,7 +28,7 @@ class OrdersTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        set(title: "writing -> reading...")
+        set(title: "writing...")
         setupBarButtons()
         setupObserver()
         addTestAnimationRedView()
@@ -44,6 +44,7 @@ class OrdersTableViewController: UITableViewController {
             self.navigationItem.title = title
         }
     }
+    
     private func setupObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(performObj(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
     }
@@ -83,14 +84,14 @@ class OrdersTableViewController: UITableViewController {
         isRewound.toggle()
     }
     
-    func addTestAnimationRedView() {
+    private func addTestAnimationRedView() {
         tableView.addSubview(redCircle)
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.repeat, .autoreverse], animations: {
             self.redCircle.frame = CGRect(x: 100, y: 100, width: 50, height: 50)
         }, completion: nil)
     }
     
-    func deleteAllData() {
+    private func deleteAllData() {
         dataModel.delAllData("OrderList")
         dataModel.delAllData("OrderField")
     }
