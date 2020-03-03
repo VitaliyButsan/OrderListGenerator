@@ -22,7 +22,6 @@ class OrdersTableViewController: UITableViewController {
         let view = UIView(frame: CGRect(x: 0, y: 100, width: 50, height: 50))
         view.backgroundColor = .red
         view.layer.cornerRadius = 25
-        view.tintColor = .red
         return view
     }()
     
@@ -46,11 +45,10 @@ class OrdersTableViewController: UITableViewController {
     }
     
     private func setupObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(performObj(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveOrders(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
     }
     
-    @objc func performObj(_ notification: Notification) {
-        print("-- Saved to db, reading... --")
+    @objc func receiveOrders(_ notification: Notification) {
         set(title: "reading...")
         getOrders()
     }
@@ -87,7 +85,7 @@ class OrdersTableViewController: UITableViewController {
     private func addTestAnimationRedView() {
         tableView.addSubview(redCircle)
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.repeat, .autoreverse], animations: {
-            self.redCircle.frame = CGRect(x: 100, y: 100, width: 50, height: 50)
+            self.redCircle.frame.origin.x += 100
         }, completion: nil)
     }
     

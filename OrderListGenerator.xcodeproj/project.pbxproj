@@ -110,6 +110,7 @@
 		580542292407FDEF001D9E53 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5852B7B524085096007BF366 /* OrderFieldTableViewCell.swift */,
 				5805422F2407FF39001D9E53 /* Storyboards */,
 			);
 			path = Views;
@@ -118,7 +119,6 @@
 		5805422A2407FDF6001D9E53 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5852B7B524085096007BF366 /* OrderFieldTableViewCell.swift */,
 				5852B7B124084E46007BF366 /* OrdersTableViewController.swift */,
 			);
 			path = Controllers;
